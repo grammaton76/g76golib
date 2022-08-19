@@ -1,4 +1,4 @@
-module simage
+module  github.com/grammaton76/g76golib/simage
 
 go 1.18
 
