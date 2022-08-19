@@ -1,4 +1,4 @@
-package g76golib
+package shared
 
 import (
 	"encoding/json"
