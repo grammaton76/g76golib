@@ -1,4 +1,4 @@
-module  github.com/grammaton76/g76golib/slogger
+module github.com/grammaton76/g76golib/slogger
 
 go 1.18
 
