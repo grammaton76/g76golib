@@ -2,7 +2,7 @@ package sc_notify
 
 import (
 	"github.com/gen2brain/beeep"
-	"github.com/grammaton76/g76golib"
+	"github.com/grammaton76/g76golib/shared"
 )
 
 type chatNotify struct {

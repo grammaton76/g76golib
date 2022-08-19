@@ -1,4 +1,4 @@
-package sjson
+package sjson // import "github.com/grammaton76/g76golib/sjson"
 
 import (
 	"bytes"
@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-ini/ini"
-	"github.com/grammaton76/g76golib/slogger"
 	"github.com/shopspring/decimal"
 	"io/ioutil"
 	"math"
@@ -15,6 +14,10 @@ import (
 	"os"
 	"strings"
 	"time"
+)
+
+import (
+	"github.com/grammaton76/g76golib/slogger"
 )
 
 var DefaultHeaders map[string]string

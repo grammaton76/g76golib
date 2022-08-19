@@ -1,4 +1,4 @@
-package shared
+package shared // import "github.com/grammaton76/g76golib/shared"
 
 import (
 	"bufio"

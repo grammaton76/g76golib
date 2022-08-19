@@ -2,7 +2,7 @@ package sc_xmpp
 
 import (
 	"fmt"
-	"github.com/grammaton76/g76golib"
+	"github.com/grammaton76/g76golib/shared"
 	"github.com/grammaton76/g76golib/sjson"
 	"github.com/grammaton76/g76golib/slogger"
 	"gosrc.io/xmpp"

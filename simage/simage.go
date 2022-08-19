@@ -1,4 +1,4 @@
-package simage
+package simage // import "github.com/grammaton76/g76golib/simage"
 
 import (
 	"fmt"
