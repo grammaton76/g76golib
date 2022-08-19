@@ -1,13 +1,10 @@
-module sc_notify
+module github.com/grammaton76/g76golib/chatoutput/sc_notify
 
 go 1.18
 
 require (
 	github.com/gen2brain/beeep v0.0.0-20220518085355-d7852edf42fc
 	github.com/grammaton76/g76golib/shared v0.0.0-20220819083758-ab870b355a93
-)
-
-require (
 	github.com/VividCortex/mysqlerr v1.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect

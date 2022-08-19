@@ -1,4 +1,4 @@
-module sentry
+module github.com/grammaton76/g76golib/sentry
 
 go 1.18
 
