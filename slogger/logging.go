@@ -1,4 +1,4 @@
-package slogger // Package slogger import "github.com/grammaton76/g76golib/slogger"
+package slogger
 
 import (
 	"fmt"
