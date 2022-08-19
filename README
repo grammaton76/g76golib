@@ -1,0 +1,4 @@
+These are the convenience functions which my various other programs in the other repos use.
+
+Some of them rely in turn upon services which are provided by the other repos (most notably, the chat system defined in the chathandlers repo).
+
