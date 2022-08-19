@@ -3,6 +3,7 @@ package sc_dbtable
 import (
 	"database/sql"
 	"fmt"
+	"github.com/grammaton76/g76golib/shared"
 	"github.com/grammaton76/g76golib/slogger"
 	"time"
 )
