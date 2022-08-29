@@ -97,6 +97,13 @@ func (config *Configuration) OrDie(msgs ...string) *Configuration {
 	return config
 }
 
+func (config *Configuration) PrintWarnings() *Configuration {
+	for _, v := range config.warnings {
+		log.Warnf("%s\n", v)
+	}
+	return config
+}
+
 func (config *Configuration) LoadAnIni(Path string) *Configuration {
 	Path = EnvParsePath(Path)
 	config.IniPath = Path
