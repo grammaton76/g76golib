@@ -27,6 +27,7 @@ type Configuration struct {
 	dumpedmap   sjson.JSON
 	keyPrefix   string
 	failed      error
+	warnings    []error
 }
 
 func (config *Configuration) SetFallback(File *Configuration) {
@@ -96,13 +97,19 @@ func (config *Configuration) OrDie(msgs ...string) *Configuration {
 	return config
 }
 
+func (config *Configuration) PrintWarnings() *Configuration {
+	for _, v := range config.warnings {
+		log.Warnf("%s\n", v)
+	}
+	return config
+}
+
 func (config *Configuration) LoadAnIni(Path string) *Configuration {
 	Path = EnvParsePath(Path)
 	config.IniPath = Path
 	cfg, err := ini.Load(Path)
 	if err != nil {
-		log.Printf("ERROR: Failed to read INI file '%s': %s\n", Path, err)
-		config.failed = err
+		config.failed = fmt.Errorf("failed to read INI file '%s': %s\n", Path, err)
 		return config
 	}
 	config.IniFile = cfg
@@ -115,8 +122,12 @@ func (config *Configuration) LoadAnIni(Path string) *Configuration {
 	found, Fallback := config.GetString("secrets.fallback")
 	if found {
 		var Secondary Configuration
-		Secondary.LoadAnIni(Fallback).OrDie("failed to load fallback ini '%s'", Fallback)
-		config.SetFallback(&Secondary)
+		Secondary.LoadAnIni(Fallback)
+		if Secondary.failed != nil {
+			config.warnings = append(config.warnings, fmt.Errorf("failed to add fallback file for '%s': %s", Path, Secondary.failed))
+		} else {
+			config.SetFallback(&Secondary)
+		}
 	}
 	for _, v := range strings.Split(Vaults, ",") {
 		if v == "" {
