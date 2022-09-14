@@ -1,13 +1,10 @@
-package simage // import "github.com/grammaton76/g76golib/simage"
+package shared // import "github.com/grammaton76/g76golib/simage"
 
 import (
 	"fmt"
-	"github.com/grammaton76/g76golib/slogger"
 	"io/ioutil"
 	"net/http"
 )
-
-var log *slogger.Logger
 
 type Image struct {
 	provenance string
@@ -17,11 +14,6 @@ type Image struct {
 	content    []byte
 	fetched    bool
 	err        error
-}
-
-func SetLogger(l *slogger.Logger) *slogger.Logger {
-	log = l
-	return l
 }
 
 func (img *Image) Identifier() string {
