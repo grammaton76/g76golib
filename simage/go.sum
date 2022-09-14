@@ -1,2 +1,4 @@
+github.com/grammaton76/g76golib/slogger v0.0.0-20220905105145-df38ebe511c0 h1:Q5iBMl2BTJraiZsY46x88mLn22Nx9aYK/KHmtcIUe3Y=
+github.com/grammaton76/g76golib/slogger v0.0.0-20220905105145-df38ebe511c0/go.mod h1:GY2a9DYVb/WCRIu5yPEcAo9Zcna0vIK6f74PSVfBBRc=
 github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 h1:iQTw/8FWTuc7uiaSepXwyf3o52HaUYcV+Tu66S3F5GA=
 github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0/go.mod h1:1NbS8ALrpOvjt0rHPNLyCIeMtbizbir8U//inJ+zuB8=

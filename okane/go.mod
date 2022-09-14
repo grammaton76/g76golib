@@ -1,4 +1,4 @@
-module okane
+module github.com/grammaton76/g76golib/okane
 
 go 1.18
 
