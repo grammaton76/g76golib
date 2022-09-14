@@ -13,7 +13,6 @@ require (
 	github.com/lib/pq v1.10.6
 	github.com/nlopes/slack v0.6.0
 	github.com/papertrail/go-tail v0.0.0-20180509224916-973c153b0431
-	github.com/shopspring/decimal v1.3.1 // indirect
 	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 // indirect
 	gosrc.io/xmpp v0.5.1
 )

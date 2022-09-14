@@ -15,8 +15,6 @@ github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4 h1:qZNfIGkIANxGv/Oq
 github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4/go.mod h1:kW3HQ4UdaAyrUCSSDR4xUzBKW6O2iA4uHhk7AtyYp10=
 github.com/godbus/dbus/v5 v5.1.0 h1:4KLkAxT3aOY8Li4FRJe/KvhoNFFxo0m6fNuFUO8QJUk=
 github.com/godbus/dbus/v5 v5.1.0/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
-github.com/grammaton76/g76golib v0.0.0-20220819080740-2f2d8de3c02e h1:1GBwlNtjhVEAGJaDwb5Z3vTaZEPrDovk8Pd+lW4QE+M=
-github.com/grammaton76/g76golib v0.0.0-20220819080740-2f2d8de3c02e/go.mod h1:BPy4iBu+3anskPewJmBuoOw/KYJMtLFwwprSkyCtUsg=
 github.com/grammaton76/g76golib/shared v0.0.0-20220819083758-ab870b355a93 h1:WslSpUo27dDZ6UBmNVCSPtAf4wq6tDCYRWdln4X4cb0=
 github.com/grammaton76/g76golib/shared v0.0.0-20220819083758-ab870b355a93/go.mod h1:NibkJtpTROOqZV13+NNRtFVNMpqlMqpKA9Xs/dWQmgY=
 github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 h1:iQTw/8FWTuc7uiaSepXwyf3o52HaUYcV+Tu66S3F5GA=
