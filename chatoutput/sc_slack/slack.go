@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/grammaton76/g76golib/shared"
-	"github.com/grammaton76/g76golib/simage"
 	"github.com/grammaton76/g76golib/sjson"
 	"github.com/grammaton76/g76golib/slogger"
 	"github.com/slack-go/slack"
