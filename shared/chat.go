@@ -2,7 +2,6 @@ package shared
 
 import (
 	"fmt"
-	"github.com/grammaton76/g76golib/simage"
 	"github.com/grammaton76/g76golib/sjson"
 	"github.com/grammaton76/g76golib/slogger"
 	"os"
@@ -48,7 +47,7 @@ type ChatHandle struct {
 	FpJoinChannel       func(*ChatHandle, *ChatTarget) error
 	FpUserById          func(*ChatHandle, string) *UserInfo
 	FpNewListener       func(*ChatHandle) (*ListenHandle, error)
-	FpSendImageTarget   func(*ChatTarget, *simage.Image) error
+	FpSendImageTarget   func(*ChatTarget, *Image) error
 	FpIdentifier        func(*ChatHandle) string
 	FpGetMsgRefByLabel  func(*ChatHandle, *ChatTarget, string) *ChatUpdateHandle
 	FpGetMsgByLabel     func(*ChatHandle, *ChatTarget, string) *ChatMessage
@@ -395,7 +394,7 @@ func (tgt *ChatTarget) Sendf(format string, options ...interface{}) {
 	//		Sendf(format, options)
 }
 
-func (tgt *ChatTarget) SendImageTarget(Image *simage.Image) error {
+func (tgt *ChatTarget) SendImageTarget(Image *Image) error {
 	if tgt == nil {
 		return fmt.Errorf("nil ChatTarget on SendImageTarget()")
 	}
