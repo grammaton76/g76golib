@@ -258,7 +258,7 @@ func fpSendMessage(cth *shared.ChatHandle, message *shared.ChatMessage) (*shared
 	return &Update, err
 }
 
-func fpSendImageTarget(ct *shared.ChatTarget, Image *simage.Image) error {
+func fpSendImageTarget(ct *shared.ChatTarget, Image *shared.Image) error {
 	api := ct.Handle.NativeClient.(*SlackClient)
 	log.Printf("Uploading image '%s' to '%s'\n", Image.Identifier(), ct.Identifier())
 	var Upload slack.FileUploadParameters
