@@ -296,6 +296,26 @@ func (l *Logger) ensureRealLogger() {
 	}
 }
 
+func trimmedStackDump() string {
+	tLines := strings.Split(string(debug.Stack()), "\n")
+	var Lines []string
+	var Header string
+	if len(Lines) > 0 {
+		Header = Lines[0]
+	} else {
+		Header = "Empty debug.Stack() result!"
+	}
+	// A somewhat horrible hack to de-spam log messages by skipping the part of the stack which is in the Slogger module
+	for _, v := range tLines {
+		if strings.HasPrefix(v, "github.com/grammaton76/g76golib/slogger") {
+			Lines = []string{Header}
+		} else {
+			Lines = append(Lines, v)
+		}
+	}
+	return strings.Join(Lines, "\n")
+}
+
 func (l *Logger) coreIff(Depth int, err error, Level LogLevel, format string, options ...interface{}) *Logger {
 	if err == nil {
 		return l
@@ -306,10 +326,8 @@ func (l *Logger) coreIff(Depth int, err error, Level LogLevel, format string, op
 	}
 	l.ensureRealLogger()
 	if Level > l.TraceAbove {
-		strings.Spldebug.Stack()
-
 		l.RealLogger.Printf("===STACK=== (level %d; threshold was %d)\n%s\n===ENDSTACK===\n",
-			Level, l.TraceAbove, string(debug.Stack()))
+			Level, l.TraceAbove, trimmedStackDump())
 	}
 	if Level >= l.MinLevel {
 		LevelStr := LogLevelString(Level)
@@ -340,7 +358,8 @@ func (l *Logger) Coref(Level LogLevel, format string, options ...interface{}) bo
 		l.Errorf("Had to instantiate a new slogger instance; we were passed an empty one.\n")
 	}
 	if Level > l.TraceAbove {
-		l.RealLogger.Printf("===STACK=== (level %d; threshold was %d)\n%s\n===ENDSTACK===\n", Level, l.TraceAbove, string(debug.Stack()))
+		l.RealLogger.Printf("===STACK=== (level %d; threshold was %d)\n%s\n===ENDSTACK===\n",
+			Level, l.TraceAbove, trimmedStackDump())
 	}
 	l.ensureCurrentLogFile()
 	if Level >= l.MinLevel {
