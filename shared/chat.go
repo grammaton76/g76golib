@@ -590,10 +590,6 @@ func NewChatMessage() *ChatMessage {
 	return &Bob
 }
 
-func (ch *ChatHandle) GetDefaultTarget() *ChatTarget {
-	return ch.OutputChannel
-}
-
 func (Msg *ChatMessage) Append(str string) *ChatMessage {
 	Msg.queued = append(Msg.queued, str)
 	return Msg

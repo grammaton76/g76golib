@@ -306,7 +306,10 @@ func (l *Logger) coreIff(Depth int, err error, Level LogLevel, format string, op
 	}
 	l.ensureRealLogger()
 	if Level > l.TraceAbove {
-		l.RealLogger.Printf("===STACK=== (level %d; threshold was %d)\n%s\n===ENDSTACK===\n", Level, l.TraceAbove, string(debug.Stack()))
+		strings.Spldebug.Stack()
+
+		l.RealLogger.Printf("===STACK=== (level %d; threshold was %d)\n%s\n===ENDSTACK===\n",
+			Level, l.TraceAbove, string(debug.Stack()))
 	}
 	if Level >= l.MinLevel {
 		LevelStr := LogLevelString(Level)
