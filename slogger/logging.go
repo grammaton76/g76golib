@@ -300,7 +300,7 @@ func trimmedStackDump() string {
 	tLines := strings.Split(string(debug.Stack()), "\n")
 	var Lines []string
 	var Header string
-	if len(Lines) > 0 {
+	if len(tLines) > 0 {
 		Header = Lines[0]
 	} else {
 		Header = "Empty debug.Stack() result!"
