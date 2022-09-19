@@ -423,9 +423,21 @@ func (tgt *ChatTarget) OrDie(msgs ...string) *ChatTarget {
 	if tgt == nil {
 		log.Fatalf("nil ChatTarget")
 	}
+	if tgt.failed == nil {
+		return tgt
+	}
+	if tgt.Handle == nil {
+		log.Warnf("Should be impossible: ChatTarget '%s' has nil handle.\n", tgt.Identifier())
+	} else {
+		if tgt.Handle.failed != nil {
+			log.Printf("Failures present in parent chathandle: %s", tgt.Handle.failed)
+		} else {
+			log.Printf("No failures present in parent chathandle\n")
+		}
+	}
 	log.FatalIff(tgt.failed, "Failed to create chat target: %s\n%s\n",
 		tgt.Identifier(), strings.Join(msgs, "\n"))
-	return tgt
+	return nil
 }
 
 func (cth *ChatHandle) ChatTarget(target string) *ChatTarget {
