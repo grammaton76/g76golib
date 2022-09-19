@@ -218,7 +218,10 @@ func xFpSendSimple(cth *shared.ChatHandle, tgt *shared.ChatTarget, msg string) (
 	if cth == nil {
 		log.Fatalf("ERROR: Sending to null channel!\n")
 	}
-	nco := cth.NativeClient.(*chatDbtable)
+	var nco *chatDbtable
+	if cth.NativeClient != nil {
+		nco = cth.NativeClient.(*chatDbtable)
+	}
 	if tgt == nil {
 		if cth.OutputChannel != nil {
 			tgt = cth.OutputChannel
