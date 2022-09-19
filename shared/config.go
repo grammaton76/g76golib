@@ -89,10 +89,10 @@ func (config *Configuration) KeyPrefix(Prefix string) {
 	config.keyPrefix = Prefix
 }
 
-func (config *Configuration) OrDie(msgs ...string) *Configuration {
+func (config *Configuration) OrDie(format string, msgs ...interface{}) *Configuration {
 	if config.failed != nil {
-		buf := strings.Join(msgs, "\n")
-		log.Fatalf("Fatal error loading config '%s': %s\n%s", config.IniPath, config.failed, buf)
+		CustomErr := fmt.Sprintf(format, msgs...)
+		log.Fatalf("Fatal error loading config '%s': %s\n%s", config.IniPath, config.failed, CustomErr)
 	}
 	return config
 }
