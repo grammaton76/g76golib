@@ -9,7 +9,7 @@ import (
 	"github.com/go-ini/ini"
 	"github.com/grammaton76/g76golib/slogger"
 	"github.com/shopspring/decimal"
-	"io/ioutil"
+	"golang.org/x/sys/unix"
 	"math"
 	"net/http"
 	"os"
@@ -279,7 +279,7 @@ func (j *JSONarray) ScanRows(Result *sql.Rows) error {
 
 func (j *JSON) AddFromForm(r *http.Request) {
 	r.ParseForm()
-	for k, _ := range r.Form {
+	for k := range r.Form {
 		v := r.FormValue(k)
 		(*j)[k] = v
 	}
@@ -287,7 +287,7 @@ func (j *JSON) AddFromForm(r *http.Request) {
 }
 
 func LoadJsonFromFileOrDie(File string, Purpose string) JSON {
-	dat, err := ioutil.ReadFile(File)
+	dat, err := os.ReadFile(File)
 	if err != nil {
 		log.Critf("JSON file file '%s' didn't load!\n%s\n", File, Purpose)
 		os.Exit(1)
@@ -321,26 +321,26 @@ func (j *JSON) SendJsonPost(Client *http.Client, url string) (*http.Response, er
 	return resp, err
 }
 
-func (Target *JSON) SpiderCopyIniSectionFrom(Section *ini.Section) {
+func (j *JSON) SpiderCopyIniSectionFrom(Section *ini.Section) {
 	//log.Printf("Started SpiderCopyIniSectionFrom on %s\n", Section.Name())
 	for _, v := range Section.ChildSections() {
 		Name := v.Name()
 		var Bob *JSON
-		if (*Target)[Name] == nil {
+		if (*j)[Name] == nil {
 			Bob.New()
-			(*Target)[Name] = Bob
+			(*j)[Name] = Bob
 		} else {
 			log.Printf("We need to fuse %s (%T) but have no code for it  (usually this is a conflict between an ini section and vault secrets).\n", Name, Name)
 		}
 		Bob.SpiderCopyIniSectionFrom(v)
-		(*Target)[Name] = Bob
+		(*j)[Name] = Bob
 	}
 	for _, v := range Section.Keys() {
-		(*Target)[v.Name()] = v.Value()
+		(*j)[v.Name()] = v.Value()
 	}
 }
 
-func (Target *JSON) SpiderCopyIniFrom(ini *ini.File) {
+func (j *JSON) SpiderCopyIniFrom(ini *ini.File) {
 	if ini == nil {
 		return
 	}
@@ -348,18 +348,18 @@ func (Target *JSON) SpiderCopyIniFrom(ini *ini.File) {
 	for _, v := range ini.Sections() {
 		Name := v.Name()
 		var Bob JSON
-		if (*Target)[v.Name()] == nil {
+		if (*j)[v.Name()] == nil {
 			Bob.New()
 		} else {
 			var Caw interface{}
-			Caw = (*Target)[v.Name()]
+			Caw = (*j)[v.Name()]
 			Bob.IngestFromObject(Caw)
 			Bob.SpiderCopyIniSectionFrom(v)
 			log.Debugf("We need to fuse %s (%T) but have no code for it (usually this is a conflict between an ini section and vault secrets).\n", Name, Name)
 			//log.Debugf("Secret content was %s\n", Name)
 		}
 		Bob.SpiderCopyIniSectionFrom(v)
-		(*Target)[Name] = Bob
+		(*j)[Name] = Bob
 	}
 }
 
@@ -374,9 +374,9 @@ func escapePerl(x string) string {
 	return Quote + x + Quote
 }
 
-func (Source JSON) ExportAsPerlCode(Header string) string {
+func (j *JSON) ExportAsPerlCode(Header string) string {
 	var Buf string
-	for k, v := range Source {
+	for k, v := range *j {
 		switch v.(type) {
 		case JSON:
 			//log.Printf("%s is JSON.\n", k)
@@ -384,7 +384,7 @@ func (Source JSON) ExportAsPerlCode(Header string) string {
 			if Header != "" {
 				Header = Header + "."
 			}
-			Buf += v.(JSON).ExportAsPerlCode(SendHeader + k)
+			Buf += v.(*JSON).ExportAsPerlCode(SendHeader + k)
 		case string:
 			Buf += fmt.Sprintf("$Config{'%s.%s'}=%s;\n", Header, k, escapePerl(v.(string)))
 		default:
@@ -405,17 +405,17 @@ func escapePhp(x string) string {
 	return Quote + x + Quote
 }
 
-func (Source JSON) ExportAsPhpCode(Header string) string {
+func (j *JSON) ExportAsPhpCode(Header string) string {
 	var Buf string
 	if Header == "" {
 		Buf = "$ini=array();\n"
 	}
-	for k, v := range Source {
+	for k, v := range *j {
 		switch v.(type) {
 		case JSON:
 			SendHeader := Header
 			//log.Printf("%s is JSON.\n", k)
-			Buf += v.(JSON).ExportAsPhpCode(SendHeader + "['" + k + "']")
+			Buf += v.(*JSON).ExportAsPhpCode(SendHeader + "['" + k + "']")
 		case string:
 			Buf += fmt.Sprintf("$ini%s['%s']=%s;\n", Header, k, escapePhp(v.(string)))
 		default:
@@ -425,13 +425,13 @@ func (Source JSON) ExportAsPhpCode(Header string) string {
 	return Buf
 }
 
-func (Source JSON) ExportAsIniString() string {
+func (j *JSON) ExportAsIniString() string {
 	var Buf string
-	for k, v := range Source {
+	for k, v := range *j {
 		switch v.(type) {
 		case JSON:
 			//log.Printf("%s is JSON.\n", k)
-			Buf += fmt.Sprintf("[%s]\n", k) + v.(JSON).ExportAsIniString() + "\n"
+			Buf += fmt.Sprintf("[%s]\n", k) + v.(*JSON).ExportAsIniString() + "\n"
 		case string:
 			Buf += fmt.Sprintf("%s=%s\n", k, v.(string))
 		default:
@@ -441,27 +441,56 @@ func (Source JSON) ExportAsIniString() string {
 	return Buf
 }
 
-func (Target *JSON) SpiderCopyJsonFrom(Obj JSON) {
+func (j *JSON) SpiderCopyJsonFrom(Obj JSON) {
 	//log.Printf("Entered SpiderCopyJsonFrom of %+v into %+v\n", Obj, Target)
 	for k, v := range Obj {
 		switch v.(type) {
 		case JSON:
 			//log.Printf("... key '%s' is a map. SpiderCopyJsonFrom Descending into further madness.\n", k)
 			var Caw JSON
-			if (*Target)[k] != nil {
-				Caw = (*Target)[k].(JSON)
+			if (*j)[k] != nil {
+				Caw = (*j)[k].(JSON)
 			} else {
 				Caw.New()
 			}
 			Caw.SpiderCopyJsonFrom(v.(JSON))
-			(*Target)[k] = Caw
+			(*j)[k] = Caw
 			//log.Printf("Spidered result is %s\n", Caw)
 		default:
 			//log.Printf("Who knows what %s.%s should do?\n", k, v)
-			(*Target)[k] = v.(string)
+			(*j)[k] = v.(string)
 		}
 	}
 	//log.Printf("Finished SpiderCopyJsonFrom section; results are %v\n", *Target)
+}
+
+func checkCanWriteFile(Filename string) error {
+	err := unix.Access(Filename, unix.O_RDWR|unix.O_CREAT)
+	if err == unix.ENOENT {
+		f, err := os.Create(Filename)
+		f.Close()
+		if err == nil {
+			os.Remove(Filename)
+			log.Debugf("Confirmed '%s' doesn't exist, but may be created.\n", Filename)
+			return nil
+		}
+	} else if err != nil {
+		return fmt.Errorf("access check couldn't open temp file '%s', but it does exist: %s", Filename, err)
+	}
+	return nil
+}
+
+func (j *JSON) TestWritable(Filename string) error {
+	err := checkCanWriteFile(Filename + ".tmp")
+	if err != nil {
+		return fmt.Errorf("couldn't open temp file '%s': %s", Filename+".tmp", err)
+	}
+	log.Debugf("Successfully tested write access to '%s'\n", Filename+".tmp")
+	err = checkCanWriteFile(Filename)
+	if err != nil {
+		return fmt.Errorf("couldn't open real file '%s': %s", Filename, err)
+	}
+	return nil
 }
 
 func (j *JSON) WriteToFile(Filename string) error {
@@ -490,7 +519,7 @@ func (j *JSON) WriteToFile(Filename string) error {
 }
 
 func (j *JSON) ReadFromFile(Filename string) error {
-	dat, err := ioutil.ReadFile(Filename)
+	dat, err := os.ReadFile(Filename)
 	if err != nil {
 		log.Printf("ERROR! File '%s' didn't load: '%s'!\n", Filename, err)
 		return err

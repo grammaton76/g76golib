@@ -36,6 +36,8 @@ github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+
 github.com/gorilla/websocket v1.2.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 github.com/grammaton76/g76golib/shared v0.0.0-20220905105145-df38ebe511c0 h1:2FIs9QzRUXyh2qqChnwS7ZWXi4MytWgrliEtKAUUkAM=
 github.com/grammaton76/g76golib/shared v0.0.0-20220905105145-df38ebe511c0/go.mod h1:1sMGetXuMClPvhIspSmxNmberpDrLswF1v5gfUM7obY=
+github.com/grammaton76/g76golib/simage v0.0.0-20220819100434-bb2ae1da5554 h1:NUICvb46SWFg6tRQt9yzP/HsTM/OeHvkaIfNNicmSxQ=
+github.com/grammaton76/g76golib/simage v0.0.0-20220819100434-bb2ae1da5554/go.mod h1:Gd9jxTl8lJW0i8sZwKGAF+B5jN1SZH/oG8aQ5fyY5T0=
 github.com/grammaton76/g76golib/sjson v0.0.0-20220819094954-195573b641dc/go.mod h1:XRYuKzaCy268VdngJBGePj8Y14GJvt8AqlpjWDZ5AM0=
 github.com/grammaton76/g76golib/sjson v0.0.0-20220905105145-df38ebe511c0 h1:8tvOFJetyLN8FJqGqkt6r17seeKMzEBD/C75usGkG70=
 github.com/grammaton76/g76golib/sjson v0.0.0-20220905105145-df38ebe511c0/go.mod h1:QuuOfWtkVUBqPrlq9d6bD9tdgk9ERAmk7hOZl/bpIKQ=

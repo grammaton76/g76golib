@@ -214,7 +214,7 @@ type Order struct {
 	Quantity   decimal.Decimal
 	Filled     decimal.Decimal
 	Fee        decimal.Decimal
-	UsdTotal   decimal.Decimal
+	UsdTotal   decimal.NullDecimal
 	TotalPrice decimal.Decimal
 	Created    time.Time
 	Closed     time.Time
@@ -917,7 +917,7 @@ func (bs *BalanceSnapshot) Add(Coinid int, Balance decimal.Decimal, Available de
 		Bal.Hold.Add(Hold)
 	}
 	bs.coinState[Coinid] = Bal
-	log.Printf("Coin %d - added %s to balance.\n", Coinid, Balance.StringFixed(8))
+	log.Debugf("Coin %d - added %s to balance.\n", Coinid, Balance.StringFixed(8))
 	return bs
 }
 

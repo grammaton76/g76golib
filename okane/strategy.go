@@ -119,7 +119,7 @@ func (strat *Strategy) GetOrderList() (*OrderList, error) {
 			Quantity:   r.oQty,
 			Filled:     decimal.Decimal{},
 			Fee:        decimal.Decimal{},
-			UsdTotal:   decimal.Decimal{},
+			UsdTotal:   decimal.NullDecimal{},
 			TotalPrice: r.oPrice,
 			Created:    time.Time{},
 			Closed:     time.Time{},
