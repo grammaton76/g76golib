@@ -408,6 +408,7 @@ func (tgt *ChatTarget) Send(Msg *ChatMessage) (*ChatUpdateHandle, error) {
 	if tgt.Handle == nil {
 		return nil, fmt.Errorf("nil ChatTarget parent handle on Send()")
 	}
+	Msg.Target = tgt
 	return tgt.Handle.Send(Msg)
 }
 
