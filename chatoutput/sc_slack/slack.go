@@ -99,11 +99,16 @@ func BindToHandle(cth *shared.ChatHandle, cfg *shared.Configuration, Section str
 	log.Printf("Performing bind for native slack functions on '%s'.\n", cth.Identifier())
 	cth.ChatType = shared.ChatTypeSlackDirect
 	var TokenKey string
-	found, value := cfg.GetString(Section + ".tokenkey")
-	if found {
-		TokenKey = value
+	var found bool
+	if found, _ = cfg.ListedKeysPresent(Section + ".token"); found {
+		TokenKey = Section + ".token"
 	} else {
-		TokenKey = "tokens." + Section
+		found, value := cfg.GetString(Section + ".tokenkey")
+		if found {
+			TokenKey = value
+		} else {
+			TokenKey = "tokens." + Section
+		}
 	}
 	Token := cfg.GetStringOrDie(TokenKey,
 		"No slack token provided at config section '%s'", Section)
