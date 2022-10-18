@@ -76,6 +76,7 @@ type ChatMessage struct {
 	Message      string
 	LabelIfReply string
 	UpdateHandle *ChatUpdateHandle
+	Images       []*Image
 	History      struct {
 		Posted *time.Time
 	}
@@ -283,6 +284,34 @@ func (Seg MsgSegment) Type() string {
 	default:
 		return "ERROR-undefined"
 	}
+}
+
+func (Segs SegmentedMsg) CompileToMsg(Chat *ChatTarget) *ChatMessage {
+	var LoadImages bool
+	if Chat.Handle == nil {
+		log.Errorf("CompileToMsg() on ChatTarget %s with nil handle\n", Chat.Identifier())
+		return nil
+	}
+	Msg := NewChatMessage()
+	if Chat != nil {
+		Msg.Target = Chat
+		if Chat.Handle.ChatType == ChatTypeSlackDirect {
+			LoadImages = true
+		}
+	}
+	for _, v := range Segs {
+		switch v.Itemtype {
+		case SEGTYPE_TEXT:
+			Msg.Message += v.Text + "\n"
+		case SEGTYPE_IMGURL:
+			if LoadImages {
+				Img, err := NewImageFromUrl(nil, v.Text)
+				log.ErrorIff(err, "could not obtain image '%s'", v.Text)
+				Msg.Images = append(Msg.Images, Img)
+			}
+		}
+	}
+	return Msg
 }
 
 func (dc *DirectClient) SendSimple(target *ChatTarget, message string) (string, string, error) {
