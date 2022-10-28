@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/go-ini/ini"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/grammaton76/g76golib/sjson"
+	"github.com/grammaton76/g76golib/pkg/sjson"
 	_ "github.com/lib/pq"
 	"os"
 	"strings"

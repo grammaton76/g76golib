@@ -2,8 +2,8 @@ package shared
 
 import (
 	"fmt"
-	"github.com/grammaton76/g76golib/sjson"
-	"github.com/grammaton76/g76golib/slogger"
+	"github.com/grammaton76/g76golib/pkg/sjson"
+	"github.com/grammaton76/g76golib/pkg/slogger"
 	"os"
 	"reflect"
 	"strings"

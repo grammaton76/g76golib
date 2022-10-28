@@ -7,7 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"github.com/grammaton76/g76golib/slogger"
+	"github.com/grammaton76/g76golib/pkg/slogger"
 	"github.com/kardianos/osext"
 	"io/ioutil"
 	"math/rand"

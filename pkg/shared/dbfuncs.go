@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/VividCortex/mysqlerr"
 	"github.com/go-sql-driver/mysql"
-	"github.com/grammaton76/g76golib/sjson"
+	"github.com/grammaton76/g76golib/pkg/sjson"
 	"github.com/lib/pq"
 	"os"
 	"reflect"

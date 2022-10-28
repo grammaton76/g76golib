@@ -2,7 +2,7 @@ package shared
 
 import (
 	"encoding/json"
-	"github.com/grammaton76/g76golib/slogger"
+	"github.com/grammaton76/g76golib/pkg/slogger"
 	"strconv"
 )
 
