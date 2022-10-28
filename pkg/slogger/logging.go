@@ -307,7 +307,7 @@ func trimmedStackDump() string {
 	}
 	// A somewhat horrible hack to de-spam log messages by skipping the part of the stack which is in the Slogger module
 	for _, v := range tLines {
-		if strings.HasPrefix(v, "github.com/grammaton76/g76golib/slogger") {
+		if strings.HasPrefix(v, "github.com/grammaton76/g76golib/pkg/slogger") {
 			Lines = []string{Header}
 		} else {
 			Lines = append(Lines, v)
