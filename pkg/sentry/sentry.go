@@ -3,7 +3,7 @@ package sentry
 import (
 	"container/list"
 	"fmt"
-	"github.com/grammaton76/g76golib/slogger"
+	"github.com/grammaton76/g76golib/pkg/slogger"
 	"sync"
 	"time"
 )
