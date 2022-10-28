@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-ini/ini"
-	"github.com/grammaton76/g76golib/slogger"
+	"github.com/grammaton76/g76golib/pkg/slogger"
 	"github.com/shopspring/decimal"
 	"golang.org/x/sys/unix"
 	"math"

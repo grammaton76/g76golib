@@ -1,10 +1,10 @@
-module github.com/grammaton76/g76golib/sjson
+module github.com/grammaton76/g76golib/pkg/sjson
 
 go 1.18
 
 require (
 	github.com/go-ini/ini v1.67.0
-	github.com/grammaton76/g76golib/slogger v0.0.0-20220919104637-927ebee1864a
+	github.com/grammaton76/g76golib/pkg/slogger v0.0.0-20220919104637-927ebee1864a
 	github.com/shopspring/decimal v1.3.1
 	golang.org/x/sys v0.0.0-20220919091848-fb04ddd9f9c8
 )
