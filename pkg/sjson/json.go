@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/go-ini/ini"
 	"github.com/grammaton76/g76golib/pkg/slogger"
@@ -466,7 +467,7 @@ func (j *JSON) SpiderCopyJsonFrom(Obj JSON) {
 
 func checkCanWriteFile(Filename string) error {
 	err := unix.Access(Filename, unix.O_RDWR|unix.O_CREAT)
-	if err == unix.ENOENT {
+	if errors.Is(err, unix.ENOENT) {
 		f, err := os.Create(Filename)
 		f.Close()
 		if err == nil {
@@ -475,7 +476,8 @@ func checkCanWriteFile(Filename string) error {
 			return nil
 		}
 	} else if err != nil {
-		return fmt.Errorf("access check couldn't open temp file '%s', but it does exist: %s", Filename, err)
+		return fmt.Errorf("access check couldn't open temp file '%s', but it does exist: %s",
+			Filename, err)
 	}
 	return nil
 }
