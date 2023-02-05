@@ -466,7 +466,7 @@ func (j *JSON) SpiderCopyJsonFrom(Obj JSON) {
 }
 
 func checkCanWriteFile(Filename string) error {
-	err := unix.Access(Filename, unix.X_OK)
+	err := unix.Access(Filename, unix.W_OK)
 	if errors.Is(err, unix.ENOENT) {
 		f, err := os.Create(Filename)
 		f.Close()
