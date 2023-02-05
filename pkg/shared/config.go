@@ -8,6 +8,7 @@ import (
 	_ "github.com/lib/pq"
 	"os"
 	"strings"
+	"time"
 )
 
 type Configuration struct {
@@ -91,8 +92,15 @@ func (config *Configuration) KeyPrefix(Prefix string) {
 
 func (config *Configuration) OrDie(format string, msgs ...interface{}) *Configuration {
 	if config.failed != nil {
+		if config.IniPath == "" {
+			log.Fatalf("Fatal error - config not found.\n%s", config.failed)
+		}
 		CustomErr := fmt.Sprintf(format, msgs...)
-		log.Fatalf("Fatal error loading config '%s': %s\n%s", config.IniPath, config.failed, CustomErr)
+		if CustomErr != "" {
+			log.Fatalf("Fatal error loading config '%s': %s", config.IniPath, config.failed)
+		} else {
+			log.Fatalf("Fatal error loading config '%s': %s\n%w", config.IniPath, config.failed, CustomErr)
+		}
 	}
 	return config
 }
@@ -104,8 +112,12 @@ func (config *Configuration) PrintWarnings() *Configuration {
 	return config
 }
 
-func (config *Configuration) LoadAnIni(Path string) *Configuration {
-	Path = EnvParsePath(Path)
+func (config *Configuration) LoadAnIni(Paths ...string) *Configuration {
+	Path := EnvParsePath(Paths)
+	if Path == "" {
+		config.failed = fmt.Errorf("Could not find ini; paths searched:\n[%s]\n", strings.Join(Paths, ", "))
+		return config
+	}
 	config.IniPath = Path
 	cfg, err := ini.Load(Path)
 	if err != nil {
@@ -162,12 +174,13 @@ func (config *Configuration) LoadAnIni(Path string) *Configuration {
 	return config
 }
 
-func (config *Configuration) SetDefaultIni(Path string) *Configuration {
-	if os.Getenv("INIFILE") != "" {
+func (config *Configuration) SetDefaultIni(Path ...string) *Configuration {
+	IniEnv := os.Getenv("INIFILE")
+	if IniEnv != "" {
 		log.Printf("Overriding default INI path '%s' per INIFILE ...\n", config.IniPath)
-		Path = os.Getenv("INIFILE")
+		Path = append(Path, IniEnv)
 	}
-	return config.LoadAnIni(Path)
+	return config.LoadAnIni(Path...)
 }
 
 func (config *Configuration) GetSection(Path string) *ini.Section {
@@ -471,6 +484,61 @@ func (config *Configuration) GetStringOrDie(Path string, DieMsg string, options 
 	if !found {
 		DieMsg = fmt.Sprintf(DieMsg, options...)
 		log.Fatalf("Failed to fetch '%s' from '%s': %s\n", Path, config.IniPath, DieMsg)
+	}
+	return Value
+}
+
+func parseLooseTime(stime string) (time.Time, error) {
+	var Time time.Time
+	var err error
+	localLoc, err := time.LoadLocation("Local")
+	if strings.Index(stime, "Z") != -1 {
+		Time, err = time.ParseInLocation("2006-01-02T15:04:05Z", stime, localLoc)
+	} else {
+		Time, err = time.ParseInLocation("2006-01-02T15:04:05-07:00", stime, localLoc)
+	}
+	return Time, err
+}
+
+func parseLooseDuration(stime string) (time.Duration, error) {
+	var Time time.Duration
+	var err error
+	Time, err = time.ParseDuration(stime)
+	return Time, err
+}
+
+func (config *Configuration) GetDurationOrDie(Path string, DieMsg string, options ...interface{}) time.Duration {
+	log.DepthOffsetRel(+1)
+	defer log.DepthOffsetRel(-1)
+	found, sValue := config.GetString(Path)
+	if !found {
+		DieMsg = fmt.Sprintf(DieMsg, options...)
+		log.Fatalf("Failed to fetch '%s' from '%s': %s\n",
+			Path, config.IniPath, DieMsg)
+	}
+	Value, err := parseLooseDuration(sValue)
+	if err != nil {
+		DieMsg = fmt.Sprintf(DieMsg, options...)
+		log.Fatalf("Found but failed to parse duration '%s' from '%s': %s\n",
+			Path, config.IniPath, DieMsg)
+	}
+	return Value
+}
+
+func (config *Configuration) GetTimeOrDie(Path string, DieMsg string, options ...interface{}) time.Time {
+	log.DepthOffsetRel(+1)
+	defer log.DepthOffsetRel(-1)
+	found, sValue := config.GetString(Path)
+	if !found {
+		DieMsg = fmt.Sprintf(DieMsg, options...)
+		log.Fatalf("Failed to fetch '%s' from '%s': %s\n",
+			Path, config.IniPath, DieMsg)
+	}
+	Value, err := parseLooseTime(sValue)
+	if err != nil {
+		DieMsg = fmt.Sprintf(DieMsg, options...)
+		log.Fatalf("Found but failed to parse time '%s' from '%s': %s\n",
+			Path, config.IniPath, DieMsg)
 	}
 	return Value
 }
@@ -857,9 +925,15 @@ func (config *Configuration) LoadKvOverlayPrefix(VaultPath string, DestPrefix st
 //return config.vaultClient.Logical()
 //}
 
-func EnvParsePath(Path string) (Ret string) {
-	Ret = strings.ReplaceAll(Path, "$HOME", os.Getenv("HOME"))
-	return Ret
+func EnvParsePath(Paths []string) (Ret string) {
+	for _, Path := range Paths {
+		Ret = strings.ReplaceAll(Path, "${HOME}", os.Getenv("HOME"))
+		Ret = strings.ReplaceAll(Ret, "${CONFIG}", os.Getenv("CONFIG"))
+		if _, err := os.Stat(Ret); err == nil {
+			return Ret
+		}
+	}
+	return ""
 }
 
 func (config *Configuration) connectVault() error {

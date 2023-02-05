@@ -100,8 +100,11 @@ func NewDiags() *Diagnostics {
 	return &this
 }
 
-func ExitIfPidActive(pidFile string) {
-	pidFile = EnvParsePath(pidFile)
+func ExitIfPidActive(pidFiles ...string) {
+	pidFile := EnvParsePath(pidFiles)
+	if pidFile == "" && len(pidFiles) > 0 {
+		pidFile = pidFiles[0]
+	}
 	err := writePidFile(pidFile)
 	if err != nil {
 		log.Infof("Exiting; couldn't lock PID '%s' due to '%s'.\n", pidFile, err)

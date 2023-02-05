@@ -15,3 +15,11 @@ require (
 	github.com/stretchr/testify v1.8.1 // indirect
 	golang.org/x/sys v0.1.0 // indirect
 )
+
+replace github.com/grammaton76/g76golib/pkg/sjson => ../../../g76golib/pkg/sjson
+
+replace github.com/grammaton76/g76golib/pkg/slogger => ../../../g76golib/pkg/slogger
+
+replace github.com/grammaton76/g76golib/pkg/shared => ../../../g76golib/pkg/shared
+
+replace github.com/grammaton76/chattools/pkg/chat_output/sc_dbtable => ../../../chattools/pkg/chat_output/sc_dbtable

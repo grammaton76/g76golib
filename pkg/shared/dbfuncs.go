@@ -57,7 +57,7 @@ func (sth *Stmt) Err() error {
 }
 
 func (sth *Stmt) Identify() string {
-	return fmt.Sprintf("(query sql '%s')", sth.sql)
+	return fmt.Sprintf("(query sql '%s' for %s)", sth.sql, sth.dbh.DbName)
 }
 
 func (dbh *DbHandle) PrepareOrDie(sql string) *Stmt {
@@ -193,7 +193,7 @@ func RunAndGetLastInsertId(stmt *Stmt, Options ...interface{}) (int64, error) {
 		var err error
 		err = stmt.QueryRow(Options...).Scan(&row)
 		if err != nil {
-			log.Fatalf("In chat.chatMessageInsert (or id scan thereof): %s\n", err)
+			log.Fatalf("In chat.chatMessageInsert: %s (or id scan thereof): %s\n", stmt.Identify(), err)
 		}
 		if row == nil {
 			log.Errorf("Null result back from QueryRow, but no error set; unclear if the database worked or not.\n")
@@ -297,7 +297,8 @@ func PrepareOrDie(dbh *DbHandle, sql string) *Stmt {
 	if dbh == nil {
 		log.Fatalf("Prepare for '%s' called with a nil database handle!\n", sql)
 	}
-	return dbh.Prepare(sql).OrDie()
+	Caw := dbh.Prepare(sql).OrDie()
+	return Caw
 }
 
 func (dbh *DbHandle) ErrorType(err error) string {
